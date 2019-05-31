@@ -1,0 +1,19 @@
+{
+  "name": "elrond-core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  },
+  "dependencies": {
+    "scryptsy": "^2.0.0",
+    "tweetnacl": "^1.0.1",
+    "tweetnacl-util": "^0.15.0"
+  }
+}
