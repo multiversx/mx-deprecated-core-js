@@ -1,19 +1,31 @@
 {
-  "name": "elrond-core",
+  "name": "@elrondnetwork/elrond-core-js",
   "version": "1.0.0",
-  "description": "",
+  "description": "Contains crypto/account functionality that can work together with the go implementation",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
+  "dependencies": {},
   "devDependencies": {
-    "gulp": "^4.0.2"
-  },
-  "dependencies": {
+    "gulp": "^4.0.2",
     "scryptsy": "^2.0.0",
     "tweetnacl": "^1.0.1",
     "tweetnacl-util": "^0.15.0"
-  }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ElrondNetwork/elrond-core-js.git"
+  },
+  "keywords": [
+    "eddsa25519",
+    "schnorr",
+    "crypto"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ElrondNetwork/elrond-core-js/issues"
+  },
+  "homepage": "https://github.com/ElrondNetwork/elrond-core-js#readme"
 }
