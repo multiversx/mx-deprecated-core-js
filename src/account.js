@@ -1,24 +1,17 @@
 'use strict';
 
-import {keyPair} from "./crypto/browser/keypair";
+const signer = require('./crypto/browser/keypair');
 
 class Account {
-  /**
-   * Account's private key
-   */
-  privateKey;
-
-  /**
-   * Account's public key
-   */
-  publicKey;
-
   /**
    * Account's constructor. If a keyfile is provided, public/private key are loaded from there
    * @param keyFile
    * @param password
    */
   constructor(keyFile = null, password = null) {
+    this.privateKey = null;
+    this.publicKey = null;
+
     if ( !keyFile ) {
       return;
     }
@@ -51,12 +44,25 @@ class Account {
    * Generates a new EdDSA25519 keypair
    * @returns {*[]}
    */
-  generatePair() {
-    const [ publicKey, privateKey ] = keyPair();
+  initNewKeyPair() {
+    const [ publicKey, privateKey ] = signer.keyPair();
     this.publicKey = publicKey;
     this.privateKey = privateKey;
 
     return [ this.publicKey, this.privateKey ]
+  }
+
+  /**
+   * Creates a signature over a message using Schnorr signature scheme
+   * @param message
+   */
+  sign(message) {
+    if ( !this.privateKey ) {
+      console.warn("account is not initialized, cannot sign message");
+      return;
+    }
+
+    return signer.sign(message, this.privateKey);
   }
 }
 
