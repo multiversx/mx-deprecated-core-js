@@ -3,6 +3,5 @@
 const core = require('./index');
 
 const acc = new core.account();
-acc.initNewKeyPair();
-
-console.log(acc);
+const kd = acc.initNewAccountFromPassword("testpass");
+console.log(kd);

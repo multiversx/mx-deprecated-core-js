@@ -1,6 +1,11 @@
 'use strict';
 
+const crypto = require('crypto');
+const uuid = require('uuid/v4');
+
+const kd = require('./crypto/browser/keyDerivation');
 const signer = require('./crypto/browser/keypair');
+const sha3 = require('./crypto/browser/sha3');
 
 class Account {
   /**
@@ -36,7 +41,7 @@ class Account {
    * Given the private key, regenerate public key
    * @param privateKey
    */
-  loadFormPrivateKey(privateKey) {
+  loadFromPrivateKey(privateKey) {
 
   }
 
@@ -50,6 +55,44 @@ class Account {
     this.privateKey = privateKey;
 
     return [ this.publicKey, this.privateKey ]
+  }
+
+  initNewAccountFromPassword(password) {
+    this.initNewKeyPair();
+    const kdParams = {
+      dklen: 32,
+      salt: crypto.randomBytes(32).toString('hex'),
+      n: 4096,
+      r: 8,
+      p: 1,
+    };
+    const iv = crypto.randomBytes(16);
+    const derivedKey = kd.generateDerivedKey(Buffer.from(password), kdParams.salt, kdParams.n, kdParams.r, kdParams.p, kdParams.dklen);
+
+    const cipher = crypto.createCipheriv('aes-128-ctr', derivedKey.slice(0, 16), iv);
+    const ciphertext = Buffer.concat([cipher.update(this.privateKey), cipher.final()]);
+    const mac = sha3(Buffer.concat([derivedKey.slice(16, 32), new Buffer(ciphertext, 'hex'), iv, new Buffer('aes-128-ctr')]));
+
+    console.log(this.publicKey);
+
+    return {
+      version: 4,
+      id: uuid({
+        random:crypto.randomBytes(16)
+      }),
+      address: Buffer.from(this.publicKey).toString('hex'),
+      crypto: {
+        ciphertext: ciphertext.toString('hex'),
+        cipherparams: {
+          iv: iv.toString('hex')
+        },
+        cipher: 'aes-128-ctr',
+        kdf: 'scrypt',
+        kdfparams: kdParams,
+        mac: mac.toString('hex'),
+        machash: "sha3256"
+      }
+    };
   }
 
   /**
