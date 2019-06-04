@@ -45,6 +45,10 @@ class Account {
 
   }
 
+  publicKeyAsString() {
+    return Buffer.from(this.publicKey).toString('hex');
+  }
+
   /**
    * Generates a new EdDSA25519 keypair
    * @returns {*[]}
@@ -73,14 +77,12 @@ class Account {
     const ciphertext = Buffer.concat([cipher.update(this.privateKey), cipher.final()]);
     const mac = sha3(Buffer.concat([derivedKey.slice(16, 32), new Buffer(ciphertext, 'hex'), iv, new Buffer('aes-128-ctr')]));
 
-    console.log(this.publicKey);
-
     return {
       version: 4,
       id: uuid({
         random:crypto.randomBytes(16)
       }),
-      address: Buffer.from(this.publicKey).toString('hex'),
+      address: this.publicKeyAsString(),
       crypto: {
         ciphertext: ciphertext.toString('hex'),
         cipherparams: {
