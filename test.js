@@ -4,4 +4,8 @@ const core = require('./index');
 
 const acc = new core.account();
 const kd = acc.initNewAccountFromPassword("testpass");
-console.log(kd);
+
+const acc2 = new core.account();
+acc2.loadFromKeyFile(kd, "testpass");
+
+console.log(acc2);

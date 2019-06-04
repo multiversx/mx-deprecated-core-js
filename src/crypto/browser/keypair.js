@@ -7,6 +7,11 @@ const keyPair = _ => {
   return [ kp.publicKey, kp.secretKey ]
 };
 
+const generatePublicKey = (privateKey) => {
+  const kp = tweetnacl.sign.keyPair.fromSecretKey(privateKey);
+  return kp.publicKey;
+};
+
 const sign = ( message, privateKey ) => {
   const sig = tweetnacl.sign(message, privateKey);
   // By default, the signature contains the message at the end, we don't need this
@@ -15,5 +20,6 @@ const sign = ( message, privateKey ) => {
 
 module.exports = {
   keyPair: keyPair,
-  sign: sign
+  sign: sign,
+  generatePublicKey: generatePublicKey,
 };
