@@ -11,7 +11,9 @@ senderAcc.initNewKeyPair();
 
 const myNewTx = new transaction(0, senderAcc.publicKeyAsString(), addr, 10);
 
-const sig = senderAcc.sign(myNewTx.prepareForSigning());
+const hashToSign = myNewTx.prepareForSigning();
+console.log("hash", hashToSign);
+const sig = senderAcc.sign(hashToSign);
 myNewTx.signature = sig;
 
 console.log(JSON.stringify(myNewTx.prepareForNode()));

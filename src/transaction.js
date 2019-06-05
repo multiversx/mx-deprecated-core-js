@@ -2,7 +2,7 @@
 
 class Transaction {
   constructor(nonce = 0, from = '', to = '', value = '', data = '') {
-    this.validateAddresses([from, to]);
+    Transaction.validateAddresses([from, to]);
     this.nonce = nonce;
     this.sender = from;
     this.receiver = to;

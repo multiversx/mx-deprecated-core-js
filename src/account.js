@@ -72,6 +72,15 @@ class Account {
   }
 
   /**
+   * Given a hex representation of the private key, regenerate public key
+   * @param sk
+   */
+  loadFromHexPrivateKey(sk) {
+    const privateKey = Buffer.from(sk, 'hex');
+    this.loadFromPrivateKey(privateKey);
+  }
+
+  /**
    * Return the hex representation of the public key
    * @returns {string}
    */
