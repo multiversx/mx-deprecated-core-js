@@ -71,6 +71,10 @@ class Account {
     this.publicKey = signer.generatePublicKey(privateKey);
   }
 
+  /**
+   * Return the hex representation of the public key
+   * @returns {string}
+   */
   publicKeyAsString() {
     return Buffer.from(this.publicKey).toString('hex');
   }
@@ -87,6 +91,11 @@ class Account {
     return [ this.publicKey, this.privateKey ]
   }
 
+  /**
+   * Generate a new account file given a password
+   * @param password
+   * @returns {{version: number, id: *, address: string, crypto: {ciphertext: string, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string, machash: string}}}
+   */
   initNewAccountFromPassword(password) {
     this.initNewKeyPair();
     const salt = crypto.randomBytes(32);
@@ -135,7 +144,8 @@ class Account {
       return;
     }
 
-    return signer.sign(message, this.privateKey);
+    const sig = signer.sign(message, this.privateKey);
+    return Buffer.from(sig).toString('hex');
   }
 }
 

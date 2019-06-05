@@ -1,11 +1,17 @@
 'use strict';
 
-const core = require('./index');
+const account = require('./src/account');
+const transaction = require('./src/transaction');
 
-const acc = new core.account();
-const kd = acc.initNewAccountFromPassword("testpass");
+const addr = '53669be65aac358a6add8e8a8b1251bb994dc1e4a0cc885956f5ecd53396f0d8';
 
-const acc2 = new core.account();
-acc2.loadFromKeyFile(kd, "testpass");
+// Build a fresh account
+const senderAcc = new account();
+senderAcc.initNewKeyPair();
 
-console.log(acc2);
+const myNewTx = new transaction(0, senderAcc.publicKeyAsString(), addr, 10);
+
+const sig = senderAcc.sign(myNewTx.prepareForSigning());
+myNewTx.signature = sig;
+
+console.log(JSON.stringify(myNewTx.prepareForNode()));
