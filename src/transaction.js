@@ -2,6 +2,7 @@
 
 class Transaction {
   constructor(nonce = 0, from = '', to = '', value = '', data = '') {
+    this.validateAddresses([from, to]);
     this.nonce = nonce;
     this.sender = from;
     this.receiver = to;
@@ -33,6 +34,14 @@ class Transaction {
       receiver: this.receiver,
       sender: this.sender,
       signature: this.signature,
+    }
+  }
+
+  static validateAddresses(addresses) {
+    for ( let address of addresses ) {
+      if ( Buffer.from(address, 'hex').length !== 32 ) {
+        throw Error("invalid address length");
+      }
     }
   }
 }
