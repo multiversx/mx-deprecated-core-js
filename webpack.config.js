@@ -9,6 +9,7 @@ module.exports = {
     filename: "index.js",
     libraryTarget: 'umd',
     library: 'elrondCoreJS',
+    globalObject: 'this'
   },
   devtool: 'source-map',
   mode: 'development',

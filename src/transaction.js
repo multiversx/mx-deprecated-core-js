@@ -1,12 +1,14 @@
 "use strict";
 
 class Transaction {
-  constructor(nonce = 0, from = '', to = '', value = '', data = '') {
+  constructor(nonce = 0, from = '', to = '', value = '', gasPrice = '', gasLimit = '', data = '') {
     Transaction.validateAddresses([from, to]);
     this.nonce = nonce;
     this.sender = from;
     this.receiver = to;
     this.value = value;
+    this.gasPrice = gasPrice;
+    this.gasLimit = gasLimit;
     this.data = data;
 
     // Set an empty signature for start
@@ -18,13 +20,26 @@ class Transaction {
    * @returns {Buffer}
    */
   prepareForSigning() {
-    return Buffer.from(JSON.stringify({
+    let mainTx = {
       nonce: this.nonce,
       value: this.value,
       // We encode sender and receiver as base64 for signing to match the go's implementation
       receiver: Buffer.from(this.receiver, 'hex').toString('base64'),
       sender: Buffer.from(this.sender, 'hex').toString('base64'),
-    }));
+    };
+
+    // The following properties which are optional are added only if they are set up
+    if ( this.gasPrice ) {
+      mainTx.gasPrice = this.gasPrice;
+    }
+    if ( this.gasLimit ) {
+      mainTx.gasLimit = this.gasLimit;
+    }
+    if ( this.data ) {
+      mainTx.data = Buffer.from(this.data, 'hex').toString('base64');
+    }
+
+    return Buffer.from(JSON.stringify(mainTx));
   }
 
   prepareForNode() {
@@ -33,6 +48,9 @@ class Transaction {
       value: this.value,
       receiver: this.receiver,
       sender: this.sender,
+      gasPrice: this.gasPrice,
+      gasLimit: this.gasLimit,
+      data: this.data,
       signature: this.signature,
     }
   }
