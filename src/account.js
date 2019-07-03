@@ -2,10 +2,13 @@
 
 const crypto = require('crypto');
 const uuid = require('uuid/v4');
+const bech32 = require('bech32');
 
 const kd = require('./crypto/browser/keyDerivation');
 const signer = require('./crypto/browser/keypair');
 const sha3 = require('./crypto/browser/sha3');
+
+const erd = 'erd';
 
 class Account {
   /**
@@ -89,6 +92,15 @@ class Account {
   }
 
   /**
+   * Return the bech32 representation of the public key
+   * @returns {string}
+   */
+  publicKeyAsBech32String() {
+    let words = bech32.toWords(Buffer.from(this.publicKey));
+    return bech32.encode(erd, words);
+  }
+
+  /**
    * Generates a new EdDSA25519 keypair
    * @returns {*[]}
    */
@@ -129,6 +141,7 @@ class Account {
         random:crypto.randomBytes(16)
       }),
       address: this.publicKeyAsString(),
+      bech32: this.publicKeyAsBech32String(),
       crypto: {
         ciphertext: ciphertext.toString('hex'),
         cipherparams: {
