@@ -89,6 +89,14 @@ class Account {
   }
 
   /**
+   * Return the hex representation of the public key
+   * @returns {string}
+   */
+  privateKeyAsString() {
+    return Buffer.from(this.privateKey).toString('hex');
+  }
+
+  /**
    * Generates a new EdDSA25519 keypair
    * @returns {*[]}
    */
