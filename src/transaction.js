@@ -36,7 +36,7 @@ class Transaction {
       mainTx.gasLimit = this.gasLimit;
     }
     if ( this.data ) {
-      mainTx.data = Buffer.from(this.data, 'hex').toString('base64');
+      mainTx.data = this.data;
     }
 
     return Buffer.from(JSON.stringify(mainTx));

@@ -1,8 +1,8 @@
 {
   "name": "@elrondnetwork/elrond-core-js",
-  "version": "1.10.0",
+  "version": "1.12.0",
   "description": "Contains crypto/account functionality that can work together with the go implementation",
-  "main": "index.js",
+  "main": "dist/index.js",
   "dependencies": {
     "bignumber.js": "^9.0.0",
     "jssha": "^2.3.1",
