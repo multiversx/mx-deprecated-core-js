@@ -101,6 +101,15 @@ class Account {
   }
 
   /**
+   * Returns the hex representation from the bech32 string
+   * @returns {string}
+   */
+  publicKeyFromBech32String(bech32addr) {
+    let dec = bech32.decode(bech32addr,256);
+    return Buffer.from(bech32.fromWords(dec.words)).toString('hex');
+  }
+
+  /**
    * Generates a new EdDSA25519 keypair
    * @returns {*[]}
    */
