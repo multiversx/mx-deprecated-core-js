@@ -2,10 +2,13 @@
 
 const crypto = require('crypto');
 const uuid = require('uuid/v4');
+const bech32 = require('bech32');
 
 const kd = require('./crypto/browser/keyDerivation');
 const signer = require('./crypto/browser/keypair');
 const sha3 = require('./crypto/browser/sha3');
+
+const erd = 'erd';
 
 class Account {
   /**
@@ -89,6 +92,24 @@ class Account {
   }
 
   /**
+   * Return the bech32 representation of the public key
+   * @returns {string}
+   */
+  publicKeyAsBech32String() {
+    let words = bech32.toWords(Buffer.from(this.publicKey));
+    return bech32.encode(erd, words);
+  }
+
+  /**
+   * Returns the hex representation from the bech32 string
+   * @returns {string}
+   */
+  publicKeyFromBech32String(bech32addr) {
+    let dec = bech32.decode(bech32addr,256);
+    return Buffer.from(bech32.fromWords(dec.words)).toString('hex');
+  }
+  
+  /**
    * Return the hex representation of the public key
    * @returns {string}
    */
@@ -137,6 +158,7 @@ class Account {
         random:crypto.randomBytes(16)
       }),
       address: this.publicKeyAsString(),
+      bech32: this.publicKeyAsBech32String(),
       crypto: {
         ciphertext: ciphertext.toString('hex'),
         cipherparams: {

@@ -25,3 +25,5 @@ myNewTx3.signature = senderAcc.sign(myNewTx3.prepareForSigning());
 console.log('MyTx1', JSON.stringify(myNewTx1.prepareForNode()));
 console.log('MyTx2', JSON.stringify(myNewTx2.prepareForNode()));
 console.log('MyTx3', JSON.stringify(myNewTx3.prepareForNode()));
+
+console.log('Bech32 of sender account',senderAcc.publicKeyAsBech32String());
