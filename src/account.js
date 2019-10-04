@@ -65,6 +65,55 @@ class Account {
     return this;
   }
 
+  generateKeyFile(password) {
+    if ( !this.publicKey || !this.privateKey ) {
+      console.warn("Account is not initialised");
+      return
+    }
+
+    const salt = crypto.randomBytes(32);
+    const kdParams = {
+      dklen: 32,
+      salt: salt.toString('hex'),
+      n: 4096,
+      r: 8,
+      p: 1,
+    };
+    const iv = crypto.randomBytes(16);
+    const derivedKey = kd.generateDerivedKey(Buffer.from(password), salt, kdParams.n, kdParams.r, kdParams.p, kdParams.dklen);
+
+    const cipher = crypto.createCipheriv('aes-128-ctr', derivedKey.slice(0, 16), iv);
+    const ciphertext = Buffer.concat([cipher.update(this.privateKey), cipher.final()]);
+
+    const mac = sha3(Buffer.concat([derivedKey.slice(16, 32), Buffer.from(ciphertext, 'hex'), iv, Buffer.from('aes-128-ctr')]));
+
+    return {
+      version: 4,
+      id: uuid({
+        random:crypto.randomBytes(16)
+      }),
+      address: this.publicKeyAsString(),
+      bech32: this.publicKeyAsBech32String(),
+      crypto: {
+        ciphertext: ciphertext.toString('hex'),
+        cipherparams: {
+          iv: iv.toString('hex')
+        },
+        cipher: 'aes-128-ctr',
+        kdf: 'scrypt',
+        kdfparams: kdParams,
+        mac: mac.toString('hex'),
+        machash: "sha3256"
+      }
+    };
+  }
+
+  generateKeyFileFromPrivateKey(privateKey, password) {
+    this.loadFromPrivateKey(privateKey);
+
+    return this.generateKeyFile(password);
+  }
+
   /**
    * Given the private key, regenerate public key
    * @param privateKey
@@ -136,41 +185,8 @@ class Account {
    */
   initNewAccountFromPassword(password) {
     this.initNewKeyPair();
-    const salt = crypto.randomBytes(32);
-    const kdParams = {
-      dklen: 32,
-      salt: salt.toString('hex'),
-      n: 4096,
-      r: 8,
-      p: 1,
-    };
-    const iv = crypto.randomBytes(16);
-    const derivedKey = kd.generateDerivedKey(Buffer.from(password), salt, kdParams.n, kdParams.r, kdParams.p, kdParams.dklen);
 
-    const cipher = crypto.createCipheriv('aes-128-ctr', derivedKey.slice(0, 16), iv);
-    const ciphertext = Buffer.concat([cipher.update(this.privateKey), cipher.final()]);
-
-    const mac = sha3(Buffer.concat([derivedKey.slice(16, 32), Buffer.from(ciphertext, 'hex'), iv, Buffer.from('aes-128-ctr')]));
-
-    return {
-      version: 4,
-      id: uuid({
-        random:crypto.randomBytes(16)
-      }),
-      address: this.publicKeyAsString(),
-      bech32: this.publicKeyAsBech32String(),
-      crypto: {
-        ciphertext: ciphertext.toString('hex'),
-        cipherparams: {
-          iv: iv.toString('hex')
-        },
-        cipher: 'aes-128-ctr',
-        kdf: 'scrypt',
-        kdfparams: kdParams,
-        mac: mac.toString('hex'),
-        machash: "sha3256"
-      }
-    };
+    return this.generateKeyFile(password);
   }
 
   /**
