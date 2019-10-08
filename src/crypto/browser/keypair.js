@@ -9,7 +9,14 @@ const keyPair = _ => {
 
 const generatePublicKey = (privateKey) => {
   const kp = tweetnacl.sign.keyPair.fromSecretKey(privateKey);
+
   return kp.publicKey;
+};
+
+const generatePairFromSeed = (privateKey) => {
+  const kp = tweetnacl.sign.keyPair.fromSeed(privateKey);
+
+  return [ kp.publicKey, kp.secretKey ]
 };
 
 const sign = ( message, privateKey ) => {
@@ -22,4 +29,5 @@ module.exports = {
   keyPair: keyPair,
   sign: sign,
   generatePublicKey: generatePublicKey,
+  generatePairFromSeed: generatePairFromSeed,
 };

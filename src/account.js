@@ -123,6 +123,12 @@ class Account {
     this.publicKey = signer.generatePublicKey(privateKey);
   }
 
+  loadFromSeed(privateKey) {
+    const [pk, sk] = signer.generatePairFromSeed(privateKey);
+    this.publicKey = pk;
+    this.privateKey = sk;
+  }
+
   /**
    * Given a hex representation of the private key, regenerate public key
    * @param sk
