@@ -1,6 +1,6 @@
 'use strict';
 
-const tweetnacl = require('tweetnacl');
+const tweetnacl = require('./nacl-fast');
 
 const keyPair = _ => {
   const kp = tweetnacl.sign.keyPair();
@@ -14,6 +14,7 @@ const generatePublicKey = (privateKey) => {
 };
 
 const generatePairFromSeed = (privateKey) => {
+  privateKey = Uint8Array.from(privateKey);
   const kp = tweetnacl.sign.keyPair.fromSeed(privateKey);
 
   return [ kp.publicKey, kp.secretKey ]
