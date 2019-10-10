@@ -109,7 +109,7 @@ class Account {
   }
 
   generateKeyFileFromPrivateKey(privateKey, password) {
-    this.loadFromPrivateKey(privateKey);
+    this.loadFromSeed(privateKey);
 
     return this.generateKeyFile(password);
   }
