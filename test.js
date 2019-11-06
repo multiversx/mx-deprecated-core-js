@@ -20,9 +20,10 @@ const hexPrivate = Buffer.from(hexSk, 'hex');
 senderAcc.loadFromSeed(hexPrivate);
 
 // Transaction with gasPrice, gasLimit, Data
-const myNewTx1 = new transaction(0, senderAcc.publicKeyAsString(), receiver, "999", 1, 10, "!!!!!");
+const myNewTx1 = new transaction(0, senderAcc.publicKeyAsString(), receiver, 10, 0, 0);
 
 myNewTx1.signature = senderAcc.sign(myNewTx1.prepareForSigning());
 
 
 console.log('MyTx1', JSON.stringify(myNewTx1.prepareForNode()));
+
