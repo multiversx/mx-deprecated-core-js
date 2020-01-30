@@ -8,6 +8,7 @@
     "bignumber.js": "^9.0.0",
     "bip39": "^3.0.2",
     "ed25519-hd-key": "^1.1.1",
+    "google-protobuf": "^3.11.2",
     "jssha": "^2.3.1",
     "scryptsy": "^2.0.0",
     "tweetnacl": "^1.0.1",
@@ -54,6 +55,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build",
+    "generate": "protoc --js_out=import_style=commonjs,binary:. src/proto/transaction.proto",
     "build": "rm -rf dist && npx babel src -d dist",
     "build:umd": "rm -rf dist && webpack --output-file index.js",
     "build:npx": "rm -rf dist && npx babel src -d dist"
