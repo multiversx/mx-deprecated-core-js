@@ -68,7 +68,7 @@ class Account {
   }
 
   /**
-   * Given a passward, it will generate the contents for a for a file containing the current initialised account's private
+   * Given a password, it will generate the contents for a file containing the current initialised account's private
    *   key, passed through a password based key derivation function
    * @param password
    * @returns {{version: number, id: *, address: string, bech32: string, crypto: {ciphertext: String, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string, machash: string}}}

@@ -14,19 +14,21 @@ const hexSk = Buffer.from(sk, 'base64').toString();
 const hexPrivate = Buffer.from(hexSk, 'hex');
 senderAcc.loadFromSeed(hexPrivate);
 
-// // Transaction with gasPrice, gasLimit, Data
+// Transaction with gasPrice, gasLimit, Data
 const myNewTx1 = new transaction(0, senderAcc.publicKeyAsString(), receiver, "999", 10, 100000, "!!!!!");
 
 const txBeforeSigning = myNewTx1.prepareForSigning();
 myNewTx1.signature = senderAcc.sign(txBeforeSigning);
+console.log("tx with signature from an account loaded from the older version plain private key: \n",
+  JSON.stringify(myNewTx1.prepareForNode()));
 
 const senderAcc2 = new account();
 const mnemonic = senderAcc2.generateMnemonic();
-console.log(mnemonic);
+console.log("generated mnemonic: \n", mnemonic);
 senderAcc2.loadFromMnemonic(mnemonic);
 
 const myNewTx2 = new transaction(0, senderAcc2.publicKeyAsString(), receiver, "999", 10, 100000, "!!!!!");
 const txBeforeSigning2 = myNewTx2.prepareForSigning();
 myNewTx2.signature = senderAcc2.sign(txBeforeSigning2);
 
-console.log(JSON.stringify(myNewTx2.prepareForNode()));
+console.log('tx with signature from an account loaded from a mnemonic phrase: \n', JSON.stringify(myNewTx2.prepareForNode()));
