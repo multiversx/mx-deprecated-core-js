@@ -1,14 +1,16 @@
 'use strict';
 
+const { derivePath } = require('ed25519-hd-key');
 const crypto = require('crypto');
 const uuid = require('uuid/v4');
 const bech32 = require('bech32');
+const bip39 = require('bip39');
 
 const kd = require('./crypto/browser/keyDerivation');
 const signer = require('./crypto/browser/keypair');
 const sha3 = require('./crypto/browser/sha3');
 
-const erd = 'erd';
+const {ERD, MNEMONIC_LEN, HD_PREFIX} = require('./constants');
 
 class Account {
   /**
@@ -65,10 +67,16 @@ class Account {
     return this;
   }
 
+  /**
+   * Given a password, it will generate the contents for a file containing the current initialised account's private
+   *   key, passed through a password based key derivation function
+   * @param password
+   * @returns {{version: number, id: *, address: string, bech32: string, crypto: {ciphertext: String, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string, machash: string}}}
+   */
   generateKeyFile(password) {
     if ( !this.publicKey || !this.privateKey ) {
       console.warn("Account is not initialised");
-      return
+      return;
     }
 
     const salt = crypto.randomBytes(32);
@@ -93,7 +101,7 @@ class Account {
         random:crypto.randomBytes(16)
       }),
       address: this.publicKeyAsString(),
-      bech32: this.publicKeyAsBech32String(),
+      bech32: this.address(),
       crypto: {
         ciphertext: ciphertext.toString('hex'),
         cipherparams: {
@@ -108,6 +116,13 @@ class Account {
     };
   }
 
+  /**
+   * Given a plaintext private key, the current account will be initialised, and a password protected file will be
+   * generated with the provided private key
+   * @param privateKey
+   * @param password
+   * @returns {{version: number, id: *, address: string, bech32: string, crypto: {ciphertext: String, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string, machash: string}}}
+   */
   generateKeyFileFromPrivateKey(privateKey, password) {
     this.loadFromSeed(privateKey);
 
@@ -123,6 +138,11 @@ class Account {
     this.publicKey = signer.generatePublicKey(privateKey);
   }
 
+  /**
+   * Given a private key, generates the public/private key pair
+   *
+   * @param privateKey
+   */
   loadFromSeed(privateKey) {
     const [pk, sk] = signer.generatePairFromSeed(privateKey);
     this.publicKey = pk;
@@ -150,16 +170,16 @@ class Account {
    * Return the bech32 representation of the public key
    * @returns {string}
    */
-  publicKeyAsBech32String() {
+  address() {
     let words = bech32.toWords(Buffer.from(this.publicKey));
-    return bech32.encode(erd, words);
+    return bech32.encode(ERD, words);
   }
 
   /**
    * Returns the hex representation from the bech32 string
    * @returns {string}
    */
-  publicKeyFromBech32String(bech32addr) {
+  publicKeyFromAddress(bech32addr) {
     let dec = bech32.decode(bech32addr,256);
     return Buffer.from(bech32.fromWords(dec.words)).toString('hex');
   }
@@ -193,6 +213,45 @@ class Account {
     this.initNewKeyPair();
 
     return this.generateKeyFile(password);
+  }
+
+  /**
+   * Generate a new mnemonic phrase
+   * @returns {string}
+   */
+  generateMnemonic() {
+    return bip39.generateMnemonic(MNEMONIC_LEN)
+  }
+
+  /**
+   * Generate private key given a mnemonic. If derive is set to true, it will return the index account
+   * from the derivation path
+   *
+   * @param mnemonic
+   * @param derive
+   * @param index
+   * @param password
+   * @returns {string}
+   */
+  privateKeyFromMnemonic(mnemonic, derive = false, index = 0, password = '') {
+    if (!bip39.validateMnemonic(mnemonic)) {
+      throw new Error("wrong mnemonic format");
+    }
+
+    const seed = bip39.mnemonicToSeedSync(mnemonic, password);
+    const {key} = derivePath(`${HD_PREFIX}/${index}'`, seed);
+
+    return key.toString("hex");
+  }
+
+  /**
+   * Loads an account from a given a mnemonic phrase
+   *
+   * @param mnemonic
+   */
+  loadFromMnemonic(mnemonic) {
+    const sk = this.privateKeyFromMnemonic(mnemonic);
+    return this.loadFromSeed(Buffer.from(sk, 'hex'));
   }
 
   /**

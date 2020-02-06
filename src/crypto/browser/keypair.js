@@ -1,6 +1,6 @@
 'use strict';
 
-const tweetnacl = require('./nacl-fast');
+const tweetnacl = require('tweetnacl');
 
 const keyPair = _ => {
   const kp = tweetnacl.sign.keyPair();

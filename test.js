@@ -10,21 +10,25 @@ const sk = 'ZjdhMDNhNDczNjYyZjA2NzczZDA0OTIyZWNkODc4MWZlYTE2ZmVmNTQzNTMxODI4MTQ0
 
 // Build a fresh account
 const senderAcc = new account();
-
 const hexSk = Buffer.from(sk, 'base64').toString();
-const hexPublic = Buffer.from('2d7aa683fbb37eafc2426bfe63e1c20aa5872ee4627c51b6789f41bfb8d31fdb', 'hex');
 const hexPrivate = Buffer.from(hexSk, 'hex');
-
-// All good here :)
-
 senderAcc.loadFromSeed(hexPrivate);
 
 // Transaction with gasPrice, gasLimit, Data
-const myNewTx1 = new transaction(0, senderAcc.publicKeyAsString(), receiver, "999", 1, 10, "!!!!!");
+const myNewTx1 = new transaction(0, senderAcc.publicKeyAsString(), receiver, "999", 10, 100000, "!!!!!");
 
 const txBeforeSigning = myNewTx1.prepareForSigning();
-console.log("tx before sign: ", txBeforeSigning.toString());
-
 myNewTx1.signature = senderAcc.sign(txBeforeSigning);
+console.log("tx with signature from an account loaded from the older version plain private key: \n",
+  JSON.stringify(myNewTx1.prepareForNode()));
 
-console.log('generated tx: ', JSON.stringify(myNewTx1.prepareForNode()));
+const senderAcc2 = new account();
+const mnemonic = senderAcc2.generateMnemonic();
+console.log("generated mnemonic: \n", mnemonic);
+senderAcc2.loadFromMnemonic(mnemonic);
+
+const myNewTx2 = new transaction(0, senderAcc2.publicKeyAsString(), receiver, "999", 10, 100000, "!!!!!");
+const txBeforeSigning2 = myNewTx2.prepareForSigning();
+myNewTx2.signature = senderAcc2.sign(txBeforeSigning2);
+
+console.log('tx with signature from an account loaded from a mnemonic phrase: \n', JSON.stringify(myNewTx2.prepareForNode()));
