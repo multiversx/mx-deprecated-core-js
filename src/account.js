@@ -10,7 +10,7 @@ const kd = require('./crypto/browser/keyDerivation');
 const signer = require('./crypto/browser/keypair');
 const sha3 = require('./crypto/browser/sha3');
 
-const {ERD, MNEMONIC_LEN, HD_PATH} = require('./constants');
+const {ERD, MNEMONIC_LEN, HD_PREFIX} = require('./constants');
 
 class Account {
   /**
@@ -67,10 +67,16 @@ class Account {
     return this;
   }
 
+  /**
+   * Given a passward, it will generate the contents for a for a file containing the current initialised account's private
+   *   key, passed through a password based key derivation function
+   * @param password
+   * @returns {{version: number, id: *, address: string, bech32: string, crypto: {ciphertext: String, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string, machash: string}}}
+   */
   generateKeyFile(password) {
     if ( !this.publicKey || !this.privateKey ) {
       console.warn("Account is not initialised");
-      return
+      return;
     }
 
     const salt = crypto.randomBytes(32);
@@ -110,6 +116,13 @@ class Account {
     };
   }
 
+  /**
+   * Given a plaintext private key, the current account will be initialised, and a password protected file will be
+   * generated with the provided private key
+   * @param privateKey
+   * @param password
+   * @returns {{version: number, id: *, address: string, bech32: string, crypto: {ciphertext: String, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string, machash: string}}}
+   */
   generateKeyFileFromPrivateKey(privateKey, password) {
     this.loadFromSeed(privateKey);
 
@@ -125,6 +138,11 @@ class Account {
     this.publicKey = signer.generatePublicKey(privateKey);
   }
 
+  /**
+   * Given a private key, generates the public/private key pair
+   *
+   * @param privateKey
+   */
   loadFromSeed(privateKey) {
     const [pk, sk] = signer.generatePairFromSeed(privateKey);
     this.publicKey = pk;
@@ -221,16 +239,13 @@ class Account {
     }
 
     const seed = bip39.mnemonicToSeedSync(mnemonic, password);
-    const {key, chainCode} = derivePath(HD_PATH, seed);
-    if (derive) {
-      // TODO: Generate derived account
-    }
+    const {key} = derivePath(`${HD_PREFIX}/${index}'`, seed);
 
     return key.toString("hex");
   }
 
   /**
-   * Loads an account given a mnemonic phrase
+   * Loads an account from a given a mnemonic phrase
    *
    * @param mnemonic
    */

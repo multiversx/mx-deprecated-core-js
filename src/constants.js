@@ -1,7 +1,7 @@
 'use strict';
 
-const HD_PREFIX = "m/44'/476'";
-const HD_PATH = `${HD_PREFIX}/0'/0'/0'`;
+const HD_PREFIX = "m/44'/476'/0'/0'";
+const HD_PATH = `${HD_PREFIX}/0'`;
 
 const MNEMONIC_LEN = 256;
 const ERD = 'erd';

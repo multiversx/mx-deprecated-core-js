@@ -29,6 +29,9 @@ const senderAcc2 = new account();
 const mnemonic = senderAcc2.generateMnemonic();
 console.log(mnemonic);
 senderAcc2.loadFromMnemonic(mnemonic);
+
+senderAcc2.generateKeyFile('password');
+
 const myNewTx2 = new transaction(0, senderAcc2.publicKeyAsString(), receiver, "999", 10, 100000, "!!!!!");
 const txBeforeSigning2 = myNewTx2.prepareForSigning();
 myNewTx2.signature = senderAcc2.sign(txBeforeSigning2);
