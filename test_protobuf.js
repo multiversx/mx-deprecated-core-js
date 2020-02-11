@@ -21,13 +21,17 @@ function testBigInt(val, expected) {
 	assert.deepEqual(actual, expected);
 }
 
-testBigInt(0,                  new Uint8Array([0x00, 0x00]));
-testBigInt("random string",    new Uint8Array([0x00, 0x00]));
-testBigInt(1/0,                new Uint8Array([0x00, 0x00]));
-testBigInt(1,                  new Uint8Array([0x00, 0x01]));
-testBigInt(-1,                 new Uint8Array([0x01, 0x01]));
-testBigInt(256,                new Uint8Array([0x00, 0x01, 0x00]));
-testBigInt(-256,               new Uint8Array([0x01, 0x01, 0x00]));
+testBigInt(0,                       new Uint8Array([0x00, 0x00]));
+testBigInt(1,                       new Uint8Array([0x00, 0x01]));
+testBigInt(-1,                      new Uint8Array([0x01, 0x01]));
+testBigInt(256,                     new Uint8Array([0x00, 0x01, 0x00]));
+testBigInt(-256,                    new Uint8Array([0x01, 0x01, 0x00]));
+testBigInt(255,                     new Uint8Array([0x00, 0xff]));
+testBigInt(-255,                    new Uint8Array([0x01, 0xff]));
+testBigInt(0xfffffff,               new Uint8Array([0x00, 0x0f, 0xff, 0xff, 0xff]));
+testBigInt(0xffffffff,              new Uint8Array([0x00, 0xff, 0xff, 0xff, 0xff]));
+testBigInt(0xaaffffffffffffffffbbn, new Uint8Array([0x00, 0xaa, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xbb ]));
+testBigInt("-65535",                new Uint8Array([0x01, 0xff, 0xff ]));
 
 // full transaction
 function toHexString(byteArray) {

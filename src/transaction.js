@@ -101,24 +101,20 @@ class Transaction {
     //       <absolute value> any number of bytes representing
     //                        the absolute value (bigendian)
     let zero = Buffer.from('0000', 'hex')
-    if(!Number.isInteger(value)) {
-      return zero
-    }
 
-    if (value === 0) {
+    var bi = BigInt(value)
+    if (bi === 0) {
       return zero
     }
     let sign = '00'
 
-    if (value < 0) {
+    if (bi < 0) {
       sign = '01'
-      value = value * -1
+      bi = bi * -1n
     }
-    let abs = ''
-    while (value > 0) {
-      let b = value & 0xff
-      abs = ('0' + b.toString(16)).slice(-2) + abs
-      value = value >> 8
+    let abs = bi.toString(16);
+    if (abs.length % 2) {
+      abs = "0" + abs
     }
     return Buffer.from( sign + abs, 'hex')
   }
