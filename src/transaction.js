@@ -1,6 +1,7 @@
 "use strict";
 
 const pb = require('./proto/transaction_pb');
+const BigNumber = require('bignumber.js');
 
 class Transaction {
   constructor(nonce = 0, from = '', to = '', value = '', gasPrice = '', gasLimit = '', data = '') {
@@ -49,10 +50,10 @@ class Transaction {
    * @return {!Uint8Array}
    */
   prepareForSigningProto() {
-    let tpb = new pb.Transaction;
+    var tpb = new pb.Transaction;
 
-    tpb.setNonce(this.nonce)
-    tpb.setValue(Transaction.toErdBigInt(this.value))
+    tpb.setNonce(this.nonce);
+    tpb.setValue(Transaction.toErdBigInt(this.value));
     tpb.setRcvaddr(Buffer.from(this.receiver, 'hex'));
     tpb.setSndaddr(Buffer.from(this.sender, 'hex'));
 
@@ -100,25 +101,29 @@ class Transaction {
     // Where <sign> one byte (0 for positive, 1 for negative)
     //       <absolute value> any number of bytes representing
     //                        the absolute value (bigendian)
-    let zero = Buffer.from('0000', 'hex')
+    const zeroBuf = Buffer.from('0000', 'hex');
+    var bn = new BigNumber(value);
 
-    var bi = BigInt(value)
-    if (bi === 0) {
-      return zero
+    if (!bn.isInteger()) {
+      throw "Provided value is not an integer";
     }
-    let sign = '00'
 
-    if (bi < 0) {
-      sign = '01'
-      bi = bi * -1n
+    if (bn.eq(0)) {
+      return zeroBuf;
     }
-    let abs = bi.toString(16);
+
+    var sign = '00';
+    if (bn.lt(0)) {
+      sign = '01';
+      bn = bn.abs();
+    }
+
+    var abs = bn.toString(16);
     if (abs.length % 2) {
-      abs = "0" + abs
+      abs = "0" + abs;
     }
-    return Buffer.from( sign + abs, 'hex')
+    return Buffer.from( sign + abs, 'hex');
   }
-
 }
 
 module.exports = Transaction;

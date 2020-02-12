@@ -33,6 +33,19 @@ testBigInt(0xffffffff,              new Uint8Array([0x00, 0xff, 0xff, 0xff, 0xff
 testBigInt(0xaaffffffffffffffffbbn, new Uint8Array([0x00, 0xaa, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xbb ]));
 testBigInt("-65535",                new Uint8Array([0x01, 0xff, 0xff ]));
 
+function testBigIntWrongValue(val) {
+	var failed = false
+	try {
+		var actual = transaction.toErdBigInt(val);
+	} catch {
+		failed = true
+	}
+	assert.equal(failed, true)
+}
+testBigIntWrongValue("random string");
+testBigIntWrongValue("3.14");
+testBigIntWrongValue(3.14);
+
 // full transaction
 function toHexString(byteArray) {
   return byteArray.reduce((output, elem) =>
