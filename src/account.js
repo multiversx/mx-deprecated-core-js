@@ -8,7 +8,6 @@ const bip39 = require('bip39');
 
 const kd = require('./crypto/browser/keyDerivation');
 const signer = require('./crypto/browser/keypair');
-const sha3 = require('./crypto/browser/sha3');
 
 const {ERD, MNEMONIC_LEN, HD_PREFIX} = require('./constants');
 
@@ -46,12 +45,12 @@ class Account {
 
     const ciphertext = Buffer.from(keyFile.crypto.ciphertext, 'hex');
 
-    const mac = sha3(Buffer.concat([derivedKey.slice(16, 32), ciphertext,
-      Buffer.from(keyFile.crypto.cipherparams.iv, 'hex'),
-      Buffer.from(keyFile.crypto.cipher)]));
+    const mac = crypto.createHmac('sha3-256', derivedKey.slice(16, 32))
+      .update(ciphertext)
+      .digest();
 
     if ( mac.toString('hex') !== keyFile.crypto.mac ) {
-      throw new Error('Key derivation failed - possibly wrong password');
+      throw new Error('MAC mismatch, possibly wrong password');
     }
 
     const decipher = crypto.createDecipheriv(keyFile.crypto.cipher, derivedKey.slice(0, 16),
@@ -71,7 +70,7 @@ class Account {
    * Given a password, it will generate the contents for a file containing the current initialised account's private
    *   key, passed through a password based key derivation function
    * @param password
-   * @returns {{version: number, id: *, address: string, bech32: string, crypto: {ciphertext: String, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string, machash: string}}}
+   * @returns {{version: number, id: *, address: string, bech32: string, crypto: {ciphertext: String, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string}}}
    */
   generateKeyFile(password) {
     if ( !this.publicKey || !this.privateKey ) {
@@ -93,7 +92,9 @@ class Account {
     const cipher = crypto.createCipheriv('aes-128-ctr', derivedKey.slice(0, 16), iv);
     const ciphertext = Buffer.concat([cipher.update(this.privateKey), cipher.final()]);
 
-    const mac = sha3(Buffer.concat([derivedKey.slice(16, 32), Buffer.from(ciphertext, 'hex'), iv, Buffer.from('aes-128-ctr')]));
+    const mac = crypto.createHmac('sha3-256', derivedKey.slice(16, 32))
+      .update(ciphertext)
+      .digest();
 
     return {
       version: 4,
@@ -111,7 +112,6 @@ class Account {
         kdf: 'scrypt',
         kdfparams: kdParams,
         mac: mac.toString('hex'),
-        machash: "sha3256"
       }
     };
   }
@@ -121,7 +121,7 @@ class Account {
    * generated with the provided private key
    * @param privateKey
    * @param password
-   * @returns {{version: number, id: *, address: string, bech32: string, crypto: {ciphertext: String, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string, machash: string}}}
+   * @returns {{version: number, id: *, address: string, bech32: string, crypto: {ciphertext: String, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string}}}
    */
   generateKeyFileFromPrivateKey(privateKey, password) {
     this.loadFromSeed(privateKey);
@@ -217,7 +217,7 @@ class Account {
   /**
    * Generate a new account file given a password
    * @param password
-   * @returns {{version: number, id: *, address: string, crypto: {ciphertext: string, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string, machash: string}}}
+   * @returns {{version: number, id: *, address: string, crypto: {ciphertext: string, cipherparams: {iv: string}, cipher: string, kdf: string, kdfparams: {dklen: number, salt: string, n: number, r: number, p: number}, mac: string}}}
    */
   initNewAccountFromPassword(password) {
     this.initNewKeyPair();

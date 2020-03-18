@@ -50,7 +50,7 @@ class Transaction {
    * @return {!Uint8Array}
    */
   prepareForSigningProto() {
-    var tpb = new pb.Transaction;
+    let tpb = new pb.Transaction;
 
     tpb.setNonce(this.nonce);
     tpb.setValue(Transaction.toErdBigInt(this.value));
@@ -102,7 +102,7 @@ class Transaction {
     //       <absolute value> any number of bytes representing
     //                        the absolute value (bigendian)
     const zeroBuf = Buffer.from('0000', 'hex');
-    var bn = new BigNumber(value);
+    let bn = new BigNumber(value);
 
     if (!bn.isInteger()) {
       throw "Provided value is not an integer";
@@ -112,13 +112,13 @@ class Transaction {
       return zeroBuf;
     }
 
-    var sign = '00';
+    let sign = '00';
     if (bn.lt(0)) {
       sign = '01';
       bn = bn.abs();
     }
 
-    var abs = bn.toString(16);
+    let abs = bn.toString(16);
     if (abs.length % 2) {
       abs = "0" + abs;
     }
