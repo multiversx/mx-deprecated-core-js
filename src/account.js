@@ -179,9 +179,19 @@ class Account {
    * Returns the hex representation from the bech32 string
    * @returns {string}
    */
-  publicKeyFromAddress(bech32addr) {
+  hexPublicKeyFromAddress(bech32addr) {
     let dec = bech32.decode(bech32addr,256);
     return Buffer.from(bech32.fromWords(dec.words)).toString('hex');
+  }
+
+  /**
+   * Returns the bech32 representation of the provided public key
+   * @param publicKey
+   * @returns {string}
+   */
+  addressFromHexPublicKey(publicKey) {
+    let words = bech32.toWords(Buffer.from(publicKey, 'hex'));
+    return bech32.encode(ERD, words);
   }
   
   /**
