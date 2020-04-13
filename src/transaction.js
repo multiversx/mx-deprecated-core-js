@@ -43,7 +43,10 @@ class Transaction {
       mainTx.data = Buffer.from(this.data).toString('base64');
     }
 
-    return Buffer.from(JSON.stringify(mainTx));
+    let mainTxJSON = JSON.stringify(mainTx);
+    console.log("Message used for signing:");
+    console.log(mainTxJSON);
+    return Buffer.from(mainTxJSON);
   }
 
   /**
