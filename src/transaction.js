@@ -54,8 +54,8 @@ class Transaction {
 
     tpb.setNonce(this.nonce);
     tpb.setValue(Transaction.toErdBigInt(this.value));
-    tpb.setRcvaddr(Buffer.from(this.receiver, 'hex'));
-    tpb.setSndaddr(Buffer.from(this.sender, 'hex'));
+    tpb.setRcvaddr(this.receiver);
+    tpb.setSndaddr(this.sender);
 
     // The following properties which are optional are added only if they are set up
     if (this.gasPrice) {
