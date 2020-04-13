@@ -1,5 +1,6 @@
 "use strict";
 
+const bech32 = require('bech32');
 const pb = require('./proto/transaction_pb');
 const BigNumber = require('bignumber.js');
 
@@ -86,8 +87,10 @@ class Transaction {
 
   static validateAddresses(addresses) {
     for ( let address of addresses ) {
-      if ( Buffer.from(address, 'hex').length !== 32 ) {
-        throw Error("invalid address length");
+      try {
+        bech32.decode(address);
+      } catch (e) {
+        throw new Error("invalid bech32 address");
       }
     }
   }
