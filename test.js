@@ -1,4 +1,5 @@
 'use strict';
+const BigNumber = require('bignumber.js');
 
 const account = require('./src/account');
 const transaction = require('./src/transaction');

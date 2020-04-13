@@ -45,7 +45,7 @@ class Account {
 
     const ciphertext = Buffer.from(keyFile.crypto.ciphertext, 'hex');
 
-    const mac = crypto.createHmac('sha3-256', derivedKey.slice(16, 32))
+    const mac = crypto.createHmac('sha256', derivedKey.slice(16, 32))
       .update(ciphertext)
       .digest();
 
@@ -92,7 +92,7 @@ class Account {
     const cipher = crypto.createCipheriv('aes-128-ctr', derivedKey.slice(0, 16), iv);
     const ciphertext = Buffer.concat([cipher.update(this.privateKey), cipher.final()]);
 
-    const mac = crypto.createHmac('sha3-256', derivedKey.slice(16, 32))
+    const mac = crypto.createHmac('sha256', derivedKey.slice(16, 32))
       .update(ciphertext)
       .digest();
 
