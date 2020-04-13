@@ -44,6 +44,7 @@ class Transaction {
     }
 
     let mainTxJSON = JSON.stringify(mainTx);
+    // TODO: Remove this log
     console.log("Message used for signing:");
     console.log(mainTxJSON);
     return Buffer.from(mainTxJSON);
