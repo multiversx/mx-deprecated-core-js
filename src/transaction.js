@@ -27,9 +27,8 @@ class Transaction {
     let mainTx = {
       nonce: this.nonce,
       value: this.value,
-      // We encode sender and receiver as base64 for signing to match the go's implementation
-      receiver: Buffer.from(this.receiver, 'hex').toString('base64'),
-      sender: Buffer.from(this.sender, 'hex').toString('base64'),
+      receiver: this.receiver,
+      sender: this.sender,
     };
 
     // The following properties which are optional are added only if they are set up
