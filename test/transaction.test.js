@@ -17,5 +17,4 @@ describe('transaction', function() {
       Transaction.validateAddresses([this.account.address()]);
     }.bind(this), Error)
   });
-
 });

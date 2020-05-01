@@ -83,7 +83,7 @@ class Transaction {
       sender: this.sender,
       gasPrice: this.gasPrice,
       gasLimit: this.gasLimit,
-      data: this.data,
+      data: Buffer.from(this.data).toString('hex'),
       signature: this.signature,
     }
   }
