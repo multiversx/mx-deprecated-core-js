@@ -28,7 +28,7 @@ const mnemonic = senderAcc2.generateMnemonic();
 console.log("generated mnemonic: \n", mnemonic);
 senderAcc2.loadFromMnemonic(mnemonic);
 
-const myNewTx2 = new transaction(0, senderAcc2.address(), senderAcc2.addressFromHexPublicKey(receiver), "999", 10, 100000, "!!!!!");
+const myNewTx2 = new transaction(0, senderAcc2.address(), senderAcc2.addressFromHexPublicKey(receiver), "999", 10, 100000, "!!!!!", "test chain ID");
 const txBeforeSigning2 = myNewTx2.prepareForSigning();
 myNewTx2.signature = senderAcc2.sign(txBeforeSigning2);
 
