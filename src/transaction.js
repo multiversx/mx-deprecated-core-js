@@ -5,7 +5,7 @@ const pb = require('./proto/transaction_pb');
 const BigNumber = require('bignumber.js');
 
 class Transaction {
-  constructor(nonce = 0, from = '', to = '', value = '', gasPrice = '', gasLimit = '', data = '',chainID='') {
+  constructor(nonce = 0, from = '', to = '', value = '', gasPrice = '', gasLimit = '', data = '', chainID='', version = 0) {
     Transaction.validateAddresses([from, to]);
     this.nonce = nonce;
     this.sender = from;
@@ -15,6 +15,7 @@ class Transaction {
     this.gasLimit = gasLimit;
     this.data = data;
     this.chainID = chainID;
+    this.version = version
 
     // Set an empty signature for start
     this.signature = '';
@@ -44,6 +45,9 @@ class Transaction {
     }
     if ( this.chainID ) {
       mainTx.chainID = this.chainID;
+    }
+    if ( this.version ) {
+      mainTx.version = this.version
     }
 
     let mainTxJSON = JSON.stringify(mainTx);
