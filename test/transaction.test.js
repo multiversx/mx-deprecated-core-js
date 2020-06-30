@@ -20,22 +20,13 @@ describe('transaction', function() {
   });
 
   it('prepare transaction for signing', function() {
-    assert.doesNotThrow(function() {
-    this.transaction.prepareForSigning();
-    }.bind(this), Error)
-  });
-
-  it('sign transaction should throw error', function() {
-    assert.throws(function() {
-    const signature = this.account.sign(this.transaction);
-    }.bind(this), "unexpected type, use Uint8Array")
-  });
-
-  it('sign transaction should work', function() {
-    assert.doesNotThrow(function() {
-    const txForSign = this.transaction.prepareForSigning();
-    const signature = this.account.sign(txForSign);
-    assert.isTrue(signature.length > 0);
-    }.bind(this), Error)
+    const tx = new Transaction(1, "erd12dnfhej64s6c56ka369gkyj3hwv5ms0y5rxgsk2k7hkd2vuk7rvqxkalsa", "erd12dnfhej64s6c56ka369gkyj3hwv5ms0y5rxgsk2k7hkd2vuk7rvqxkalsa");
+    const txBuffForSigning = tx.prepareForSigning();
+    const txForSigning = JSON.parse(txBuffForSigning.toString());
+    
+    // assert that fields not specified on the constructor are not initialised
+    assert.isUndefined(txForSigning.gasPrice, "gasPrice should have not been defined");
+    assert.isUndefined(txForSigning.gasLimit, "gasLimit should have not been defined");
+    assert.isUndefined(txForSigning.data, "data should have not been defined");
   });
 });
