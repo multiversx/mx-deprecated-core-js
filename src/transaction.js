@@ -93,6 +93,7 @@ class Transaction {
       gasLimit: this.gasLimit,
       data: this.data,
       chainID: this.chainID,
+      version: this.version,
       signature: this.signature,
     }
   }
