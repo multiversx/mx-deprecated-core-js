@@ -51,9 +51,6 @@ class Transaction {
     }
 
     let mainTxJSON = JSON.stringify(mainTx);
-    // TODO: Remove this log
-    console.log("Message used for signing:");
-    console.log(mainTxJSON);
     return Buffer.from(mainTxJSON);
   }
 
@@ -93,6 +90,7 @@ class Transaction {
       gasLimit: this.gasLimit,
       data: this.data,
       chainID: this.chainID,
+      version: this.version,
       signature: this.signature,
     }
   }
