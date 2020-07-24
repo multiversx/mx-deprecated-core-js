@@ -88,7 +88,7 @@ class Transaction {
       sender: this.sender,
       gasPrice: this.gasPrice,
       gasLimit: this.gasLimit,
-      data: this.data,
+      data: Buffer.from(this.data).toString('base64'),
       chainID: this.chainID,
       version: this.version,
       signature: this.signature,
