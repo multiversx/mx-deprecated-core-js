@@ -30,6 +30,7 @@ senderAcc2.loadFromMnemonic(mnemonic);
 
 const myNewTx2 = new transaction(0, senderAcc2.address(), senderAcc2.addressFromHexPublicKey(receiver), "999", 10, 100000, "!!!!!", "test chain ID", 999);
 const txBeforeSigning2 = myNewTx2.prepareForSigning();
+console.log('tx before signing: \n', txBeforeSigning2.toString());
 myNewTx2.signature = senderAcc2.sign(txBeforeSigning2);
 
 console.log('tx with signature from an account loaded from a mnemonic phrase: \n', JSON.stringify(myNewTx2.prepareForNode()));
