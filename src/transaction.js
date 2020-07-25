@@ -41,7 +41,7 @@ class Transaction {
       mainTx.gasLimit = this.gasLimit;
     }
     if ( this.data ) {
-      mainTx.data = this.data;
+      mainTx.data = Buffer.from(this.data).toString('base64');
     }
     if ( this.chainID ) {
       mainTx.chainID = this.chainID;
@@ -88,7 +88,7 @@ class Transaction {
       sender: this.sender,
       gasPrice: this.gasPrice,
       gasLimit: this.gasLimit,
-      data: this.data,
+      data: Buffer.from(this.data).toString('base64'),
       chainID: this.chainID,
       version: this.version,
       signature: this.signature,
