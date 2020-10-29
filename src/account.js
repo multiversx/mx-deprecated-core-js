@@ -7,7 +7,8 @@ const bech32 = require('bech32');
 const bip39 = require('bip39');
 
 const kd = require('./crypto/browser/keyDerivation');
-const signer = require('./crypto/browser/keypair');
+const signer = require('./crypto/browser/ed25519Keypair');
+const blsSigner = require('./crypto/browser/blsKeypair');
 
 const {ERD, MNEMONIC_LEN, HD_PREFIX} = require('./constants');
 
@@ -276,6 +277,18 @@ class Account {
 
     const sig = signer.sign(message, this.privateKey);
     return Buffer.from(sig).toString('hex');
+  }
+
+  async initBLS() {
+    return blsSigner.init()
+  }
+
+  generateBLSKeypair(privateKey) {
+    return blsSigner.generatePairFromSeed(privateKey);
+  }
+
+  computeBLSSig(message, privateKey) {
+    return blsSigner.sign(message, privateKey);
   }
 }
 

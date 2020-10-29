@@ -2,7 +2,7 @@
 
 const tweetnacl = require('tweetnacl');
 
-const keyPair = _ => {
+const ed25519Keypair = _ => {
   const kp = tweetnacl.sign.keyPair();
   return [ kp.publicKey, kp.secretKey ]
 };
@@ -27,7 +27,7 @@ const sign = ( message, privateKey ) => {
 };
 
 module.exports = {
-  keyPair: keyPair,
+  keyPair: ed25519Keypair,
   sign: sign,
   generatePublicKey: generatePublicKey,
   generatePairFromSeed: generatePairFromSeed,
