@@ -1,6 +1,6 @@
 {
   "name": "@elrondnetwork/elrond-core-js",
-  "version": "1.27.0",
+  "version": "1.28.0",
   "description": "Contains crypto/account functionality that can work together with the go implementation",
   "main": "dist/index.js",
   "dependencies": {
@@ -10,7 +10,6 @@
     "bip39": "^3.0.2",
     "bls-signatures": "^0.2.4",
     "ed25519-hd-key": "^1.1.2",
-    "google-protobuf": "^3.11.3",
     "jssha": "^2.3.1",
     "scryptsy": "^2.1.0",
     "tweetnacl": "^1.0.3",
@@ -59,7 +58,6 @@
   "scripts": {
     "test": "mocha",
     "prepublishOnly": "npm run build",
-    "generate": "protoc --js_out=import_style=commonjs,binary:. src/proto/transaction.proto",
     "build": "rm -rf dist && npx babel src -d dist",
     "build:umd": "rm -rf dist && webpack --output-file index.js",
     "build:npx": "rm -rf dist && npx babel src -d dist"
