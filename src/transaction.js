@@ -36,7 +36,7 @@ class Transaction {
 
     // The following properties which are optional are added only if they are set up
     if ( this.senderUsername ) {
-      mainTx.sederUsername = this.senderUsername;
+      mainTx.senderUsername = this.senderUsername;
     }
     if ( this.receiverUsername ) {
       mainTx.receiverUsername = this.receiverUsername;
