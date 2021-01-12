@@ -3,11 +3,14 @@
 const bech32 = require('bech32');
 
 class Transaction {
-  constructor(nonce = 0, from = '', to = '', value = '', gasPrice = '', gasLimit = '', data = '', chainID='', version = 0) {
+  constructor({nonce = 0, from = '', to = '', senderUsername = '', receiverUsername = '',
+                value = '', gasPrice = '', gasLimit = '', data = '', chainID='', version = 0}) {
     Transaction.validateAddresses([from, to]);
     this.nonce = nonce;
     this.sender = from;
     this.receiver = to;
+    this.senderUsername = senderUsername;
+    this.receiverUsername = receiverUsername;
     this.value = value;
     this.gasPrice = gasPrice;
     this.gasLimit = gasLimit;
@@ -32,6 +35,12 @@ class Transaction {
     };
 
     // The following properties which are optional are added only if they are set up
+    if ( this.senderUsername ) {
+      mainTx.sederUsername = this.senderUsername;
+    }
+    if ( this.receiverUsername ) {
+      mainTx.receiverUsername = this.receiverUsername;
+    }
     if ( this.gasPrice ) {
       mainTx.gasPrice = this.gasPrice;
     }
@@ -58,6 +67,8 @@ class Transaction {
       value: this.value,
       receiver: this.receiver,
       sender: this.sender,
+      senderUsername: this.senderUsername,
+      receiverUsername: this.receiverUsername,
       gasPrice: this.gasPrice,
       gasLimit: this.gasLimit,
       data: Buffer.from(this.data).toString('base64'),

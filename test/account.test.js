@@ -1,6 +1,6 @@
 const {assert} = require('chai');
+const bech32 = require("bech32");
 const account = require('../src/account');
-
 describe('account', function() {
   it('fails on wrong password', function() {
     const firstAccount = new account();
@@ -37,4 +37,10 @@ describe('account', function() {
 
     assert.deepEqual(secondAccount, firstAccount, "seccondAccount should be the same as firstAccount")
   });
+
+  it("prints reward address", function() {
+    let address = "erd1ezlzq50pq6w2wrpvchg9vd9szgay85ks8jhx9zjksezlae6j5hcsg66xtu";
+    const decoded = bech32.decode(address, 256);
+    console.log(Buffer.from(bech32.fromWords(decoded.words)).toString('hex'));
+  })
 });

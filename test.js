@@ -16,7 +16,17 @@ const hexPrivate = Buffer.from(hexSk, 'hex');
 senderAcc.loadFromSeed(hexPrivate);
 
 // Transaction with gasPrice, gasLimit, Data
-const myNewTx1 = new transaction(0, senderAcc.address(), senderAcc.addressFromHexPublicKey(receiver), "999", 10, 100000, "!!!!!", "chainID", 999);
+const myNewTx1 = new transaction({
+  nonce: 0,
+  from: senderAcc.address(),
+  to: senderAcc.addressFromHexPublicKey(receiver),
+  value: "999",
+  gasPrice: 10,
+  gasLimit: 1000000,
+  data: "!!!!!",
+  chainID: "chainID",
+  version: 999,
+});
 
 const txBeforeSigning = myNewTx1.prepareForSigning();
 myNewTx1.signature = senderAcc.sign(txBeforeSigning);
@@ -28,7 +38,17 @@ const mnemonic = senderAcc2.generateMnemonic();
 console.log("generated mnemonic: \n", mnemonic);
 senderAcc2.loadFromMnemonic(mnemonic);
 
-const myNewTx2 = new transaction(0, senderAcc2.address(), senderAcc2.addressFromHexPublicKey(receiver), "999", 10, 100000, "!!!!!", "test chain ID", 999);
+const myNewTx2 = new transaction({
+  nonce: 0,
+  from: senderAcc.address(),
+  to: senderAcc.addressFromHexPublicKey(receiver),
+  value: "999",
+  gasPrice: 10,
+  gasLimit: 1000000,
+  data: "!!!!!",
+  chainID: "test chainID",
+  version: 999,
+});
 const txBeforeSigning2 = myNewTx2.prepareForSigning();
 console.log('tx before signing: \n', txBeforeSigning2.toString());
 myNewTx2.signature = senderAcc2.sign(txBeforeSigning2);
