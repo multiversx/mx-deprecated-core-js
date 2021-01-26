@@ -41,4 +41,21 @@ describe('transaction', function() {
     assert.isUndefined(txForSigning.gasLimit, "gasLimit should have not been defined");
     assert.isUndefined(txForSigning.data, "data should have not been defined");
   });
+
+  it("computes correct fee with data field", () => {
+    let transaction = new Transaction({
+      nonce: 92,
+      value: "123456789000000000000000000000",
+      to: "erd12dnfhej64s6c56ka369gkyj3hwv5ms0y5rxgsk2k7hkd2vuk7rvqxkalsa",
+      from: "erd12dnfhej64s6c56ka369gkyj3hwv5ms0y5rxgsk2k7hkd2vuk7rvqxkalsa",
+      data: "testdata",
+      gasPrice: 500,
+      gasLimit: 12010,
+      chainID: "local-testnet",
+      version: 1
+    });
+
+    let fee = transaction.computeFee({minGasLimit: 10, gasPerDataByte: 1500, gasPriceModifier: 0.01});
+    assert.equal(fee.toString(), "6005000");
+  });
 });

@@ -1,6 +1,7 @@
 "use strict";
 
 const bech32 = require('bech32');
+const BigNumber = require('bignumber.js');
 
 class Transaction {
   constructor({nonce = 0, from = '', to = '', senderUsername = '', receiverUsername = '',
@@ -76,6 +77,27 @@ class Transaction {
       version: this.version,
       signature: this.signature,
     }
+  }
+
+  computeFee({minGasLimit, gasPerDataByte, gasPriceModifier}) {
+    let moveBalanceGas = minGasLimit + Buffer.from(this.data).length * gasPerDataByte;
+    let intGasLimit = parseInt(this.gasLimit);
+    let intGasPrice = parseInt(this.gasPrice);
+    if (moveBalanceGas > intGasLimit) {
+      throw new Error(`Not enough gas provided ${intGasLimit}`);
+    }
+
+    let gasPrice = new BigNumber(intGasPrice);
+    let feeForMove = (new BigNumber(moveBalanceGas)).multipliedBy(gasPrice);
+    if (moveBalanceGas === intGasLimit) {
+      return feeForMove;
+    }
+
+    let diff = new BigNumber(intGasLimit - moveBalanceGas);
+    let modifiedGasPrice = gasPrice.multipliedBy(new BigNumber(gasPriceModifier));
+    let processingFee = diff.multipliedBy(modifiedGasPrice);
+
+    return feeForMove.plus(processingFee);
   }
 
   static validateAddresses(addresses) {
