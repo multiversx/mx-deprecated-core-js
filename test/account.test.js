@@ -1,6 +1,6 @@
 const {assert} = require('chai');
+const bech32 = require("bech32");
 const account = require('../src/account');
-
 describe('account', function() {
   it('fails on wrong password', function() {
     const firstAccount = new account();
