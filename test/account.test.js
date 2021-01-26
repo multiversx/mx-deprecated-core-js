@@ -37,10 +37,4 @@ describe('account', function() {
 
     assert.deepEqual(secondAccount, firstAccount, "seccondAccount should be the same as firstAccount")
   });
-
-  it("prints reward address", function() {
-    let address = "erd1ezlzq50pq6w2wrpvchg9vd9szgay85ks8jhx9zjksezlae6j5hcsg66xtu";
-    const decoded = bech32.decode(address, 256);
-    console.log(Buffer.from(bech32.fromWords(decoded.words)).toString('hex'));
-  })
 });

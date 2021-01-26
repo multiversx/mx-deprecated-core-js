@@ -4,8 +4,19 @@ const bech32 = require('bech32');
 const BigNumber = require('bignumber.js');
 
 class Transaction {
-  constructor({nonce = 0, from = '', to = '', senderUsername = '', receiverUsername = '',
-                value = '', gasPrice = '', gasLimit = '', data = '', chainID='', version = 0}) {
+  constructor({
+                nonce = 0,
+                from = '',
+                to = '',
+                senderUsername = '',
+                receiverUsername = '',
+                value = '',
+                gasPrice = '',
+                gasLimit = '',
+                data = '',
+                chainID='',
+                version = 0
+  }) {
     Transaction.validateAddresses([from, to]);
     this.nonce = nonce;
     this.sender = from;
