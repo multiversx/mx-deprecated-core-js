@@ -15,7 +15,8 @@ class Transaction {
                 gasLimit = '',
                 data = '',
                 chainID='',
-                version = 0
+                version = 0,
+                options = 0
   }) {
     Transaction.validateAddresses([from, to]);
     this.nonce = nonce;
@@ -28,7 +29,8 @@ class Transaction {
     this.gasLimit = gasLimit;
     this.data = data;
     this.chainID = chainID;
-    this.version = version
+    this.version = version;
+    this.options = options;
 
     // Set an empty signature for start
     this.signature = '';
@@ -66,7 +68,10 @@ class Transaction {
       mainTx.chainID = this.chainID;
     }
     if ( this.version ) {
-      mainTx.version = this.version
+      mainTx.version = this.version;
+    }
+    if ( this.options ) {
+      mainTx.options = this.options;
     }
 
     let mainTxJSON = JSON.stringify(mainTx);
@@ -86,6 +91,7 @@ class Transaction {
       data: Buffer.from(this.data).toString('base64'),
       chainID: this.chainID,
       version: this.version,
+      options: this.options,
       signature: this.signature,
     }
   }
