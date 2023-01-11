@@ -48,6 +48,7 @@ const myNewTx2 = new transaction({
   data: "!!!!!",
   chainID: "test chainID",
   version: 999,
+  options: 1,
 });
 const txBeforeSigning2 = myNewTx2.prepareForSigning();
 console.log('tx before signing: \n', txBeforeSigning2.toString());
